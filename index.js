@@ -111,9 +111,14 @@ function createHtml() {
       <div class="info">
         <h3>共${num}个图标</h3>
         <div>
-          <span>使用方法：</span>
+          <span>单色图标：</span>
           <span class="exmpale">
             &lt;span class="${aliIconFontClass} icon-name" /&gt;
+          </span>
+          &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+          <span>多色图标：</span>
+          <span class="exmpale">
+            &lt;svg class="icon" aria-hidden="true" &gt; &lt;use xlink:href="#icon-name" /&gt;  &lt;/svg&gt;
           </span>
         </div>
       </div>
