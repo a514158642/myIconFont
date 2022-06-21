@@ -1,4 +1,12 @@
-@font-face {
+
+      .icon {
+        width: 1em;
+        height: 1em;
+        vertical-align: -0.15em;
+        fill: currentColor;
+        overflow: hidden;
+      }
+    @font-face {
     font-family: my-icons;
     src: url("my-icons.eot");src: url("my-icons.eot?5c9f1282#iefix") format("embedded-opentype"),
              url("my-icons.woff2?5c9f1282") format("woff2"),

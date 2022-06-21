@@ -5,7 +5,8 @@ const app = express()
 const fs = require("fs");
 const dir = 'src'
 //如果要与阿里的iconfont混用  这里指定阿里iconfont的类名（如果没做改动，这个类名默认是iconfont）
-const aliIconFontClass = "iconfont"  //需要兼容的第三方iconfont样式
+const runWithThird = false; // 是否与第三方混用
+const thirdFontClass = "iconfont"  //需要兼容的第三方iconfont样式
 const fileName = "iconfont"  //资源文件名
 const coloursFlagOfName = "-colours" //多色图标的名称标识
 const colours = [] //多色图标集合
@@ -127,7 +128,7 @@ function createHtml(css) {
         <div>
           <span>单色图标：</span>
           <span class="exmpale">
-            &lt;span class="${aliIconFontClass} icon-name" /&gt;
+            &lt;span class="${thirdFontClass} icon-name" /&gt;
           </span>
           &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
           <span>多色图标：</span>
@@ -139,7 +140,7 @@ function createHtml(css) {
       <hr/>
     `
     temp = temp.replace(divList[0], str)
-    temp = temp.replace(/<i class="/g, `<i class="${aliIconFontClass} `)
+    temp = temp.replace(/<i class="/g, `<i class="${thirdFontClass} `)
     temp = temp.replace(/icon-icon-/g, `icon-`)
 
     colours.map(item => {
@@ -148,7 +149,7 @@ function createHtml(css) {
           <use xlink:href="#${item}"></use>
         </svg>
       `
-      temp = temp.replace(`<i class="${aliIconFontClass} ${item}"></i>`, svg)
+      temp = temp.replace(`<i class="${thirdFontClass} ${item}"></i>`, svg)
     })
     fs.writeFile(options.htmlOutput, temp, error => {
       if (error) {
@@ -167,18 +168,10 @@ function createCss() {
   fs.readFile(options.cssOutput, (err, content) => {
     let temp = content.toString()
     const classList = temp.match(/\[class\^=".*icon"]/g)
-    temp = temp.replace(classList[0], "." + aliIconFontClass)
+    temp = temp.replace(classList[0], "." + thirdFontClass)
     temp = temp.replace(/content:/g, "position:relative;\ntop:2px;\ncontent:")
     temp = temp.replace(/icon-icon-/g, `icon-`)
-
-    let css = `
-      .${aliIconFontClass}{
-        font-family:"${aliIconFontClass}","my-icons" !important;
-        font-size:16px;
-        font-style:normal;
-        -webkit-font-smoothing:antialiased;
-        -moz-osx-font-smoothing:grayscale;
-      }
+    let iconCss = `
       .icon {
         width: 1em;
         height: 1em;
@@ -187,19 +180,41 @@ function createCss() {
         overflow: hidden;
       }
     `
-    fs.writeFile(path.join(dir, "fonts/resetFontFamily.css"), css, (error) => {
-      if (error) {
-        console.log(error)
-      } else {
-        fs.writeFile(options.cssOutput, temp, (e) => {
-          if (e) {
-            console.log(e)
-          } else {
-            startServe()
-          }
-        })
+    temp = iconCss + temp
+
+    let css = `
+      .${thirdFontClass}{
+        font-family:"${thirdFontClass}","my-icons" !important;
+        font-size:16px;
+        font-style:normal;
+        -webkit-font-smoothing:antialiased;
+        -moz-osx-font-smoothing:grayscale;
       }
-    })
+    `
+    //是否与第三方混用
+    if (runWithThird) {
+      fs.writeFile(path.join(dir, "fonts/resetFontFamily.css"), css, (error) => {
+        if (error) {
+          console.log(error)
+        } else {
+          fs.writeFile(options.cssOutput, temp, (e) => {
+            if (e) {
+              console.log(e)
+            } else {
+              startServe()
+            }
+          })
+        }
+      })
+    } else {
+      fs.writeFile(options.cssOutput, temp, (e) => {
+        if (e) {
+          console.log(e)
+        } else {
+          startServe()
+        }
+      })
+    }
   })
 }
 /**
