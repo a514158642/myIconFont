@@ -1,10 +1,10 @@
 @font-face {
     font-family: my-icons;
-    src: url("my-icons.eot");src: url("my-icons.eot?05a4f558#iefix") format("embedded-opentype"),
-             url("my-icons.woff2?05a4f558") format("woff2"),
-             url("my-icons.woff?05a4f558") format("woff"),
-             url("my-icons.ttf?05a4f558") format("truetype"),
-             url("my-icons.svg?05a4f558#my-icons") format("svg");
+    src: url("my-icons.eot");src: url("my-icons.eot?5c9f1282#iefix") format("embedded-opentype"),
+             url("my-icons.woff2?5c9f1282") format("woff2"),
+             url("my-icons.woff?5c9f1282") format("woff"),
+             url("my-icons.ttf?5c9f1282") format("truetype"),
+             url("my-icons.svg?5c9f1282#my-icons") format("svg");
     font-weight: normal;
     font-style: normal;
 }
@@ -17,51 +17,63 @@
 }
 
 
-.icon-android::before {
+.icon-android-colours::before {
     position:relative;
 top:2px;
 content: "\ea01";
 }
 
-.icon-containerimagelibrary::before {
+.icon-basicnetwork::before {
     position:relative;
 top:2px;
 content: "\ea02";
 }
 
-.icon-deepin::before {
+.icon-containerimagelibrary::before {
     position:relative;
 top:2px;
 content: "\ea03";
 }
 
-.icon-fedora::before {
+.icon-deepin::before {
     position:relative;
 top:2px;
 content: "\ea04";
 }
 
-.icon-home-Workorder::before {
+.icon-fedora::before {
     position:relative;
 top:2px;
 content: "\ea05";
 }
 
-.icon-macos::before {
+.icon-home-Workorder::before {
     position:relative;
 top:2px;
 content: "\ea06";
 }
 
-.icon-redhat::before {
+.icon-macos::before {
     position:relative;
 top:2px;
 content: "\ea07";
 }
 
-.icon-wraning-colours::before {
+.icon-redhat::before {
     position:relative;
 top:2px;
 content: "\ea08";
+}
+
+.icon-speed::before {
+    position:relative;
+top:2px;
+content: "\ea09";
+}
+
+.icon-wraning-colours::before {
+    position:relative;
+top:2px;
+content: "\ea0a";
 }
 

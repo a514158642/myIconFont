@@ -5,8 +5,9 @@ const app = express()
 const fs = require("fs");
 const dir = 'src'
 //如果要与阿里的iconfont混用  这里指定阿里iconfont的类名（如果没做改动，这个类名默认是iconfont）
-const aliIconFontClass = "iconfont"
-const fileName = "iconfont"
+const aliIconFontClass = "iconfont"  //需要兼容的第三方iconfont样式
+const fileName = "iconfont"  //资源文件名
+const coloursFlagOfName = "-colours" //多色图标的名称标识
 const colours = [] //多色图标集合
 
 app.use(express.static("./"))
@@ -51,7 +52,7 @@ function createJs() {
       temp = temp.replace(/icon-icon-/g, `icon-`)
       temp = JSON.parse(temp.substring(temp.indexOf("[")))
       //过滤出彩色图标
-      temp = temp.filter(item => item.svg.includes("standalone="))
+      temp = temp.filter(item => item.name.includes(coloursFlagOfName))
       //保留各彩色icon的path
       temp.map(item => {
         let viewBox = item.svg.indexOf("viewBox")
