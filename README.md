@@ -1,4 +1,4 @@
-本工具旨在利用已有的svg图片，离线生成iconfont资源文件，可以与阿里的iconfont混合使用，且用法与阿里iconfont基本一致（暂不支持多色图标）
+本工具旨在利用已有的svg图片，离线生成iconfont资源文件，可以与阿里的iconfont混合使用，且用法与阿里iconfont基本一致
 
 使用说明：
 
@@ -11,6 +11,8 @@
   4. 执行 node index
 
   5. 完毕后，fonts/下以生成iconfont资源，可通过 http://localhost:3000 进行查看图标
+
+  6. 在项目中使用，需先引入iconfont.css、iconfont.js、resetFontFamily.css
 
   注意：
 
