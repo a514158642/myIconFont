@@ -75,17 +75,29 @@ function createJs() {
         if (error) {
           console.log(error)
         } else {
-          createHtml()
+          getCssTpl()
         }
       })
     })
   })
 }
-
+/**
+ * 读取css模板
+ */
+function getCssTpl() {
+  fs.readFile(path.join(dir, "../cssTemplate.css"), (err, content) => {
+    if (err) {
+      console.error(err)
+      return false
+    }
+    let css = content.toString()
+    createHtml(css)
+  })
+}
 /**
  * 生成样例html
  */
-function createHtml() {
+function createHtml(css) {
   fs.readFile(options.htmlOutput, (err, content) => {
     if (err) {
       console.error(err)
@@ -93,13 +105,14 @@ function createHtml() {
     }
     let temp = content.toString()
     //引入样例的css资源文件和js资源文件
-    temp = temp.replace(/<style>/, `<link rel="stylesheet" href="/cssTemplate.css"/>\n\t<script src="/src/fonts/${fileName}.js"/>\n<style>`)
+    temp = temp.replace(/<style>/, `<script src="${fileName}.js"/>\n<style>`)
     let styleStartIndex = temp.indexOf("<style>")
     let styleEndtIndex = temp.indexOf("</style>")
     let temp1 = temp.substring(0, styleStartIndex)
     let temp2 = temp.substring(styleEndtIndex + 8)
     //获取处理后的 html文件
     temp = temp1 + temp2
+    temp = temp.replace("<body>", `<style>\n${css}\n</style>\n</head>\n<body>`)
     const h3List = temp.match(/<h3.*\/h3>/g)
     const h4List = temp.match(/<h4(.|\n|\r)*\/h4>/g)
     const divList = temp.match(/<hr\/>(.|\n|\r)*<div class="info"(.|\n|\r)*<hr\/>/g)
