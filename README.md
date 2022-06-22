@@ -1,4 +1,4 @@
-本工具旨在利用已有的svg图片，离线生成iconfont资源文件，可以与阿里的iconfont混合使用，且用法与阿里iconfont基本一致
+本工具旨在利用已有的svg图片，离线生成iconfont资源文件，可以与第三方iconfont（如阿里）混合使用，且用法与阿里iconfont基本一致
 
 使用说明：
 
@@ -16,7 +16,7 @@
 
   注意：
 
-    1. 如果要与阿里的iconfont混用，且修改了阿里iconfont的类名（默认情况下是“iconfont”）,切记在index.js中修改thirdFontClass值和runWithThird标记。
+    1. 如果要与第三方iconfont混用，切记在index.js中修改thirdFontClass值和runWithThird标记。
 
-    2. 如果要与阿里的iconfont混用，切记要在引用阿里资源文件之后引用myIconfont的资源文件，最后引入resetFontFamily.css(此文件在fonts/下自动生成)
+    2. 如果要与第三方iconfont混用，切记要在引用第三方资源文件之后引用myIconfont的资源文件，最后引入resetFontFamily.css(此文件在fonts/下自动生成)
 
