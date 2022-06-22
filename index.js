@@ -74,7 +74,7 @@ function createJs() {
       //写入js资源文件
       fs.writeFile(options.jsOutput, jsTemp, (error) => {
         if (error) {
-          console.log(error)
+          console.error(error)
         } else {
           getCssTpl()
         }
@@ -106,7 +106,7 @@ function createHtml(css) {
     }
     let temp = content.toString()
     //引入样例的css资源文件和js资源文件
-    temp = temp.replace(/<style>/, `<script src="${fileName}.js"/>\n<style>`)
+    temp = temp.replace(/<style>/, `<script src="${fileName}.js"></script>\n<style>`)
     let styleStartIndex = temp.indexOf("<style>")
     let styleEndtIndex = temp.indexOf("</style>")
     let temp1 = temp.substring(0, styleStartIndex)
@@ -153,7 +153,7 @@ function createHtml(css) {
     })
     fs.writeFile(options.htmlOutput, temp, error => {
       if (error) {
-        console.log(error)
+        console.error(error)
       } else {
         createCss()
       }
@@ -195,11 +195,11 @@ function createCss() {
     if (runWithThird) {
       fs.writeFile(path.join(dir, "fonts/resetFontFamily.css"), css, (error) => {
         if (error) {
-          console.log(error)
+          console.error(error)
         } else {
           fs.writeFile(options.cssOutput, temp, (e) => {
             if (e) {
-              console.log(e)
+              console.error(e)
             } else {
               startServe()
             }
@@ -209,7 +209,7 @@ function createCss() {
     } else {
       fs.writeFile(options.cssOutput, temp, (e) => {
         if (e) {
-          console.log(e)
+          console.error(e)
         } else {
           startServe()
         }
