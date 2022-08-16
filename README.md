@@ -14,6 +14,11 @@
 
   6. 在项目中使用，需先引入iconfont.css、iconfont.js，如与第三方iconfont混用，还需引入resetFontFamily.css
 
+  7. icons.json
+        name 图标名称
+        type 图标类型  0-公用图标  1-功能图标  后续再添加分类维度可以继续新增 2、3、4...
+        zh_cn 图标中文信息
+
   注意：
 
     1. 如果要与第三方iconfont混用，切记在index.js中修改thirdFontClass值和runWithThird标记。

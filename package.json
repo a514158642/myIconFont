@@ -8,6 +8,7 @@
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
+    "cheerio": "^1.0.0-rc.12",
     "core-js": "^3.6.5",
     "vue": "^2.6.11",
     "webpack-iconfont-plugin-nodejs": "^1.0.25"

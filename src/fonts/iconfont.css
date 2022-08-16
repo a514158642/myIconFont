@@ -2,7 +2,7 @@
       .icon {
         width: 1em;
         height: 1em;
-        vertical-align: -0.15em;
+        vertical- align: -0.15em;
         fill: currentColor;
         overflow: hidden;
       }
@@ -26,62 +26,42 @@
 
 
 .icon-android-colours::before {
-    position:relative;
-top:2px;
-content: "\ea01";
+    content: "\ea01";
 }
 
 .icon-basicnetwork::before {
-    position:relative;
-top:2px;
-content: "\ea02";
+    content: "\ea02";
 }
 
 .icon-containerimagelibrary::before {
-    position:relative;
-top:2px;
-content: "\ea03";
+    content: "\ea03";
 }
 
 .icon-deepin::before {
-    position:relative;
-top:2px;
-content: "\ea04";
+    content: "\ea04";
 }
 
 .icon-fedora::before {
-    position:relative;
-top:2px;
-content: "\ea05";
+    content: "\ea05";
 }
 
 .icon-home-Workorder::before {
-    position:relative;
-top:2px;
-content: "\ea06";
+    content: "\ea06";
 }
 
 .icon-macos::before {
-    position:relative;
-top:2px;
-content: "\ea07";
+    content: "\ea07";
 }
 
 .icon-redhat::before {
-    position:relative;
-top:2px;
-content: "\ea08";
+    content: "\ea08";
 }
 
 .icon-speed::before {
-    position:relative;
-top:2px;
-content: "\ea09";
+    content: "\ea09";
 }
 
 .icon-wraning-colours::before {
-    position:relative;
-top:2px;
-content: "\ea0a";
+    content: "\ea0a";
 }
 

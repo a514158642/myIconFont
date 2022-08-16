@@ -1,4 +1,5 @@
 const WebpackIconfontPluginNodejs = require('webpack-iconfont-plugin-nodejs');
+const cheeiro = require("cheerio")
 const path = require('path');
 const express = require("express")
 const app = express()
@@ -10,6 +11,8 @@ const thirdFontClass = "iconfont"  //需要兼容的第三方iconfont样式
 const fileName = "iconfont"  //资源文件名
 const coloursFlagOfName = "-colours" //多色图标的名称标识
 const colours = [] //多色图标集合
+// icon json数据
+const iconsData = JSON.parse(fs.readFileSync(path.resolve(__dirname, "./resource/icons.json"), "utf-8"))
 
 app.use(express.static("./"))
 
@@ -19,9 +22,10 @@ const options = {
   svgs: path.join(dir, 'svg/*.svg'),
   fontsOutput: path.join(dir, 'fonts/'),
   cssOutput: path.join(dir, `fonts/${fileName}.css`),
-  htmlOutput: path.join(dir, 'fonts/index.html'),
+  htmlOutput: path.join(dir, 'fonts/view/index.html'),
   jsOutput: path.join(dir, `fonts/${fileName}.js`),
 };
+
 
 run()
 /**
@@ -36,7 +40,7 @@ function run() {
  */
 function createJs() {
   //读取js模板
-  fs.readFile(path.join(dir, "../jsTempalte.js"), (err, jsTpl) => {
+  fs.readFile(path.join(dir, "../resource/jsTempalte.js"), (err, jsTpl) => {
     if (err) {
       console.error(err)
       return false
@@ -72,95 +76,79 @@ function createJs() {
       //绘制svg图片
       jsTemp = jsTemp.replace(/<svg><\/svg>/, `<svg>${symbolList.join("")}</svg>`)
       //写入js资源文件
-      fs.writeFile(options.jsOutput, jsTemp, (error) => {
+      fs.writeFile(options.jsOutput, "/*eslint-disable*/ \n" + jsTemp + "\n /*eslint-disable*/", (error) => {
         if (error) {
           console.error(error)
         } else {
-          getCssTpl()
+          fs.copyFileSync(path.resolve(__dirname, "./resource/jquery.js"), path.resolve(__dirname, "./src/fonts/view/jquery.js"))
+          fs.copyFileSync(path.resolve(__dirname, "./resource/custom.js"), path.resolve(__dirname, "./src/fonts/view/custom.js"))
+          fs.copyFileSync(path.resolve(__dirname, "./resource/custom.css"), path.resolve(__dirname, "./src/fonts/view/custom.css"))
+          //注入全局变量
+          fs.writeFileSync(path.join(dir, 'fonts/view/icons.js'), "let thirdClass='" + thirdFontClass + "';let iconsData=" + JSON.stringify(iconsData))
+          createHtml()
         }
       })
     })
   })
 }
 /**
- * 读取css模板
- */
-function getCssTpl() {
-  fs.readFile(path.join(dir, "../cssTemplate.css"), (err, content) => {
-    if (err) {
-      console.error(err)
-      return false
-    }
-    let css = content.toString()
-    createHtml(css)
-  })
-}
-/**
  * 生成样例html
  */
-function createHtml(css) {
+function createHtml() {
   fs.readFile(options.htmlOutput, (err, content) => {
     if (err) {
       console.error(err)
       return false
     }
-    let temp = content.toString()
+    let $ = cheeiro.load(content.toString())
     //引入样例的css资源文件和js资源文件
-    temp = temp.replace(/<style>/, `<script src="${fileName}.js"></script>\n<style>`)
-    let styleStartIndex = temp.indexOf("<style>")
-    let styleEndtIndex = temp.indexOf("</style>")
-    let temp1 = temp.substring(0, styleStartIndex)
-    let temp2 = temp.substring(styleEndtIndex + 8)
-    //获取处理后的 html文件
-    temp = temp1 + temp2
-    temp = temp.replace("<body>", `<style>\n${css}\n</style>\n</head>\n<body>`)
-    const h3List = temp.match(/<h3.*\/h3>/g)
-    const h4List = temp.match(/<h4(.|\n|\r)*\/h4>/g)
-    const divList = temp.match(/<hr\/>(.|\n|\r)*<div class="info"(.|\n|\r)*<hr\/>/g)
-
-    let num = h3List[1].substring(h3List[1].indexOf("(") + 1, h3List[1].indexOf(" icons"))
-    temp = temp.replace(h3List[0], "")
-    temp = temp.replace(h4List[0], "")
-
-    let str = `
-      <div class="info">
-        <h3>共${num}个图标</h3>
-        <div>
-          <span>单色图标：</span>
-          <span class="exmpale">
-            &lt;span class="${thirdFontClass} icon-name" /&gt;
-          </span>
-          &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
-          <span>多色图标：</span>
-          <span class="exmpale">
-            &lt;svg class="icon" aria-hidden="true" &gt; &lt;use xlink:href="#icon-name" /&gt;  &lt;/svg&gt;
-          </span>
-        </div>
-      </div>
-      <hr/>
-    `
-    temp = temp.replace(divList[0], str)
-    temp = temp.replace(/<i class="/g, `<i class="${thirdFontClass} `)
-    temp = temp.replace(/icon-icon-/g, `icon-`)
-
-    colours.map(item => {
-      let svg = `
-        <svg class="icon" aria-hidden="true">
-          <use xlink:href="#${item}"></use>
-        </svg>
-      `
-      temp = temp.replace(`<i class="${thirdFontClass} ${item}"></i>`, svg)
+    $("style").before(`
+      <link rel="stylesheet" href="custom.css"/>
+      <script src="icons.js"></script>
+      <script src="jquery.js"></script>
+      <script src="../${fileName}.js"></script>
+      <script src="custom.js"></script>
+    `)
+    $("script").map((index, item) => {
+      if (!$(item).attr("src")) {
+        $(item).remove()
+      }
     })
-    fs.writeFile(options.htmlOutput, temp, error => {
+    $("style").remove()
+    $("body").empty().html(fs.readFileSync(path.join(dir, `../resource/template.html`)).toString())
+    $("#num").text(iconsData.length)
+
+    iconsData.map(icon => {
+      let str = ``
+      if (icon.name.includes("colours")) {//多色
+        str = `<svg id="icon_${icon.name}" class="icon" aria-hidden="true"><use xlink:href="#${icon.name}"></use></svg>`
+      } else {//单色
+        str = `<i class="${thirdFontClass} ${icon.name}" id="icon_${icon.name}"></i>`
+      }
+
+      $("#icon_content").append(`<section> 
+        <div class="name">${icon.zh_cn}</div> 
+        <input type="text" id="input-${icon.name}" value="${icon.name}" readonly></input>
+        <div class="icon_main">${str}</div>
+        <div class="handle">
+          <span class="copybtn" onclick="copyName('${icon.name}')">复制</span>
+          <span class="downbtn" onclick="down('${icon.name}')">下载</span>
+          <span class="view" onclick="view('${icon.name}')">查看</span>
+        </div> 
+        </section>`)
+    })
+
+    fs.writeFile(options.htmlOutput, $.html(), error => {
       if (error) {
         console.error(error)
       } else {
         createCss()
       }
     })
-  })
-}
 
+  })
+
+}
 /**
  * 生成css
  */
@@ -169,13 +157,12 @@ function createCss() {
     let temp = content.toString()
     const classList = temp.match(/\[class\^=".*icon"]/g)
     temp = temp.replace(classList[0], "." + thirdFontClass)
-    temp = temp.replace(/content:/g, "position:relative;\ntop:2px;\ncontent:")
     temp = temp.replace(/icon-icon-/g, `icon-`)
     let iconCss = `
       .icon {
         width: 1em;
         height: 1em;
-        vertical-align: -0.15em;
+        vertical- align: -0.15em;
         fill: currentColor;
         overflow: hidden;
       }
@@ -184,11 +171,11 @@ function createCss() {
 
     let css = `
       .${thirdFontClass}{
-        font-family:"${thirdFontClass}","my-icons" !important;
-        font-size:16px;
-        font-style:normal;
-        -webkit-font-smoothing:antialiased;
-        -moz-osx-font-smoothing:grayscale;
+        font-family: "${thirdFontClass}", "my-icons"!important;
+        font-size: 16px;
+        font-style: normal;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
       }
     `
     //是否与第三方混用
