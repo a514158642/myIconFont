@@ -28,10 +28,21 @@ const options = {
 
 
 run()
+
+/**
+ * 检查json数据
+ */
+function checkJson() {
+  let temp = new Set(iconsData.map(item => item.name))
+  if (temp.size !== iconsData.length) {
+    throw new Error(`JSON中含有重复name的数据，请检查。`)
+  }
+}
 /**
  * 开始执行函数
  */
 function run() {
+  checkJson()
   new WebpackIconfontPluginNodejs(options).build().then(createJs)
 }
 
@@ -115,6 +126,13 @@ function createHtml() {
       }
     })
     $("style").remove()
+    let oldLen = $("section").length
+    let jsonLen = iconsData.length
+
+    if (oldLen !== jsonLen) {
+      throw new Error(`列表中的svg数量（${oldLen}）与JSON中的svg数量（${jsonLen}）不一致。`)
+    }
+
     $("body").empty().html(fs.readFileSync(path.join(dir, `../resource/template.html`)).toString())
     $("#num").text(iconsData.length)
 
