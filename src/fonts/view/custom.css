@@ -190,11 +190,11 @@ body {
   position: fixed;
   width: 700px;
   height: 570px;
-  top: 0;
+  top: 50%;
   border: 1px solid #ccc;
   background: #fff;
   left: 50%;
-  transform: translate(-50%, 50%);
+  transform: translate(-50%, -50%);
   z-index: 12;
   border-radius: 5px;
   display: flex;

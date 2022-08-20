@@ -1,4 +1,5 @@
 const WebpackIconfontPluginNodejs = require('webpack-iconfont-plugin-nodejs');
+const xlsx = require("node-xlsx")
 const cheeiro = require("cheerio")
 const path = require('path');
 const express = require("express")
@@ -11,8 +12,9 @@ const thirdFontClass = "iconfont"  //需要兼容的第三方iconfont样式
 const fileName = "iconfont"  //资源文件名
 const coloursFlagOfName = "-colours" //多色图标的名称标识
 const colours = [] //多色图标集合
+
 // icon json数据
-const iconsData = JSON.parse(fs.readFileSync(path.resolve(__dirname, "./resource/icons.json"), "utf-8"))
+const iconsData = getIconsJson()
 
 app.use(express.static("./"))
 
@@ -29,6 +31,54 @@ const options = {
 
 run()
 
+function getIconsJson() {
+  let resJson = []
+  if (true) {//读取excel中的配置
+    let list = xlsx.parse("icons.xlsx")
+    if (list && list[0] && list[0].data && list[0].data.length > 1) {
+      list[0].data.shift()
+      list[0].data.map(icon => {
+        if (icon[0] && icon[1] && icon[2]) {
+          resJson.push({
+            name: icon[0],
+            type: getIconType(icon),
+            zh_cn: icon[2]
+          })
+        } else {
+          throw new Error("图标excel配置不正确，请校准！")
+        }
+
+      })
+    } else {
+      throw new Error("图标excel配置不正确，请校准！")
+    }
+  } else { //直接读取json文件
+    resJson = JSON.parse(fs.readFileSync(path.resolve(__dirname, "./resource/icons.json"), "utf-8"))
+  }
+  resJson.sort(function (a, b) {
+    if (a.name >= b.name) {
+      return 1
+    } else {
+      return -1
+    }
+  })
+  return resJson
+}
+/**
+ * 转换icon类型
+ * @param {} icon 
+ * @returns 
+ */
+function getIconType(icon) {
+  switch (icon[1]) {
+    case "公共":
+      return "0"
+    case "功能":
+      return "1"
+    default:
+      throw new Error("图标" + icon[0] + "类型不合法！")
+  }
+}
 /**
  * 检查json数据
  */
@@ -74,9 +124,11 @@ function createJs() {
         let viewBox = item.svg.indexOf("viewBox")
         item.viewBoxSite = item.svg.substring(viewBox).split("\"")[1]
 
-        let start = item.svg.indexOf("<path")
-        let end = item.svg.lastIndexOf("</svg>")
-        item.svg = item.svg.substring(start, end)
+        let svgIndex = item.svg.indexOf("<svg")
+        let svgStr = item.svg.substring(svgIndex)
+        let start = svgStr.indexOf(">")
+        let end = svgStr.lastIndexOf("</svg>")
+        item.svg = getSvgContent(svgStr.substring(start + 1, end))
       })
       //填充symbol模板
       let symbolList = temp.map(item => {
@@ -101,6 +153,34 @@ function createJs() {
       })
     })
   })
+}
+/**
+ * 获取svg内容，处理样式
+ * 每个svg的style都是全局的，所以当多个svg在一起时，sytle会相互覆盖
+ * 这里将各个style中的fill，重写到path上，确保各个样式不会相互影响
+ * @param {*} svg 
+ */
+function getSvgContent(svg) {
+  let classList = svg.match(/class="[a-zA-Z0-9]+"/g)
+  if (classList) {
+    [...new Set(classList)].map(item => {
+      let className = item.match(/"[a-zA-Z0-9]+"/)[0].replace(/"/g, "")
+      let styleStart = svg.indexOf("." + className + "{")
+      let styleTemp = svg.substring(styleStart + className.length + 2)
+      let styleObj = styleTemp.substring(0, styleTemp.indexOf(";}")).split(":")
+      let styleStr = `${styleObj[0]}="${styleObj[1]}"`
+
+      let classReg = new RegExp(item, "ig")
+      svg = svg.replace(classReg, styleStr)
+    })
+  }
+  if (svg.includes("</defs>")) {
+    svg = svg.substring(svg.indexOf("</defs>") + 7)
+  }
+  if (svg.includes("</title>")) {
+    svg = svg.substring(svg.indexOf("</title>") + 8)
+  }
+  return svg
 }
 /**
  * 生成样例html
@@ -130,7 +210,7 @@ function createHtml() {
     let jsonLen = iconsData.length
 
     if (oldLen !== jsonLen) {
-      throw new Error(`列表中的svg数量（${oldLen}）与JSON中的svg数量（${jsonLen}）不一致。`)
+      throw new Error(`列表中的svg数量（${oldLen}）与配置文件中的svg数量（${jsonLen}）不一致。`)
     }
 
     $("body").empty().html(fs.readFileSync(path.join(dir, `../resource/template.html`)).toString())
