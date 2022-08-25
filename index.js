@@ -116,7 +116,38 @@ function createJs() {
       let temp = content.toString()
       //若出现重复的前缀，进行处理
       temp = temp.replace(/icon-icon-/g, `icon-`)
+      //备份一份svgList
+      // fs.writeFileSync(path.join(dir, `fonts/svgList.js`), temp)
+
       temp = JSON.parse(temp.substring(temp.indexOf("[")))
+      temp.map(icon => {
+        let num = 200  //统一各svg宽高为200
+        let width = icon.svg.match(/width="[0-9]*"/)
+        let height = icon.svg.match(/height="[0-9]*"/)
+        let fill = icon.svg.match(/fill="#[0-9a-zA-Z]*"/g)
+        if (width) {
+          icon.svg = icon.svg.replace(width[0], `width="${num}"`)
+        }
+
+        if (height) {
+          icon.svg = icon.svg.replace(height[0], `height="${num}"`)
+        }
+
+        if (!width || !height) {
+          icon.svg = icon.svg.replace(/<svg/ig, `<svg width="${num}" height="${num}"`)
+        }
+        if (!icon.name.includes("-colours") && fill) {
+          fill.map(fItem => {
+            icon.svg = icon.svg.replace(fItem, ``)
+          })
+        }
+        //将个icon的svg存入iconsData
+        let excelIcon = iconsData.find(item => item.name === icon.name)
+        if (excelIcon) {
+          excelIcon.svg = icon.svg
+          excelIcon.svg = excelIcon.svg.replace(/<svg/ig, `<svg id="svg-${icon.name}"`)
+        }
+      })
       //过滤出彩色图标
       temp = temp.filter(item => item.name.includes(coloursFlagOfName))
       //保留各彩色icon的path
@@ -146,6 +177,7 @@ function createJs() {
           fs.copyFileSync(path.resolve(__dirname, "./resource/jquery.js"), path.resolve(__dirname, "./src/fonts/view/jquery.js"))
           fs.copyFileSync(path.resolve(__dirname, "./resource/custom.js"), path.resolve(__dirname, "./src/fonts/view/custom.js"))
           fs.copyFileSync(path.resolve(__dirname, "./resource/custom.css"), path.resolve(__dirname, "./src/fonts/view/custom.css"))
+          fs.copyFileSync(path.resolve(__dirname, "./resource/svgAsPng.js"), path.resolve(__dirname, "./src/fonts/view/svgAsPng.js"))
           //注入全局变量
           fs.writeFileSync(path.join(dir, 'fonts/view/icons.js'), "let thirdClass='" + thirdFontClass + "';let iconsData=" + JSON.stringify(iconsData))
           createHtml()
@@ -195,7 +227,8 @@ function createHtml() {
     //引入样例的css资源文件和js资源文件
     $("style").before(`
       <link rel="stylesheet" href="custom.css"/>
-      <script src="icons.js"></script>
+      <script src="icons.js"></script> 
+      <script src="svgAsPng.js"></script>
       <script src="jquery.js"></script>
       <script src="../${fileName}.js"></script>
       <script src="custom.js"></script>

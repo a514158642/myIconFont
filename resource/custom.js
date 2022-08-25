@@ -11,8 +11,8 @@ function search() {
     filterIcons()
   }, 300)
 }
-function down() {
-  alert("敬请期待")
+function down(name) {
+  view(name, true)
 }
 function copyName(name) {
   $("#input-" + name)[0].focus();
@@ -30,28 +30,57 @@ function closeAPI() {
   $(".mask").hide()
 }
 
-function view(name) {
+function view(name, flag) {
   let icon = iconsData.find(item => item.name === name)
   if ($("#iconview")) {
     $("#iconview").remove()
   }
   let str = ''
   let colorDiv = ''
-  if (name.includes("colours")) {//多色
-    str = `<svg class="icon" aria-hidden="true"><use xlink:href="#${icon.name}"></use></svg>`
-    colorDiv = ''
-  } else {//单色
-    str = `<i class="${thirdClass} ${icon.name}"></i>`
-    colorDiv = `
-      <div class="view_color">
-      <input type="color" id="view_color" onchange="changeViewColor('${icon.name}')"></input>
-      <span id="res_color">#000000</span>
-    </div>
+  let downBtn = ''
+  let sizeDiv = ''
+  if (flag) {
+    str = icon.svg
+    downBtn = `<div class="downBtn" onclick="doDownLoad('${icon.name}')">下载</div>`
+    sizeDiv = `
+      <select id="down_size" class="down_size">
+        <option value="16" selected>16px</option>
+        <option value="32">32px</option>
+        <option value="64">64px</option>
+        <option value="128">128px</option>
+        <option value="200">200px</option>
+      </select>
     `
+    if (name.includes("colours")) {//多色
+      colorDiv = ''
+    } else {//单色
+      colorDiv = `
+        <div class="view_color">
+        <input type="color" id="view_color" onchange="changeViewColor('${icon.name}',${flag})"></input>
+        <span id="res_color">#000000</span>
+      </div>
+      `
+    }
+  } else {
+    sizeDiv = ``
+    downBtn = ``
+    if (name.includes("colours")) {//多色
+      str = `<svg class="icon" aria-hidden="true"><use xlink:href="#${icon.name}"></use></svg>`
+      colorDiv = ''
+    } else {//单色
+      str = `<i class="${thirdClass} ${icon.name}"></i>`
+      colorDiv = `
+        <div class="view_color">
+        <input type="color" id="view_color" onchange="changeViewColor('${icon.name}')"></input>
+        <span id="res_color">#000000</span>
+      </div>
+      `
+    }
   }
   $(".mask").show()
   $("body").append(`
     <div id="iconview">
+        ${sizeDiv}
         ${colorDiv}
         <div class="header">
           <div>
@@ -64,18 +93,33 @@ function view(name) {
         <div class="content">
         ${str}
         </div>
-        <div class="close" onclick="closeIconview()">关闭</div>
+        <div>
+          ${downBtn}
+          <div class="close" onclick="closeIconview()">关闭</div>
+        </div>
     </div>
   `)
+}
+function doDownLoad(name) {
+  let node = $("#svg-" + name)[0]
+  let size = $("#down_size").val() - 0
+  if (!node) alert("svg节点渲染异常！")
+
+  saveSvgAsPng(node, `${name}.${size}x${size}.png`, { scale: size / 1000 });
 }
 function closeIconview() {
   $("#iconview").hide()
   $(".mask").hide()
 }
-function changeViewColor(name) {
+function changeViewColor(name, flag) {
   var color = $("#view_color").val()
-  $("#iconview ." + name).css("color", color)
   $("#res_color").text(color)
+  if (flag) {
+    let path = $("#svg-" + name).find("path")
+    path.attr("fill", color)
+  } else {
+    $("#iconview ." + name).css("color", color)
+  }
 }
 
 function changeClass(type) {
@@ -162,20 +206,6 @@ function renderAPI(res) {
   }
 }
 
-function downLoadPng(name) {
-  html2canvas(document.querySelector('#icon_' + name)).then(canvas => {
-    const imgUrl = canvas.toDataURL('image/jpeg')
-    const image = document.createElement('img')
-    image.src = imgUrl
-    // 将生成的图片放到 类名为 content 的元素中
-    document.querySelector('#num').appendChild(image)
-    const a = document.createElement('a')
-    a.href = imgUrl
-    // a.download 后面的内容为自定义图片的名称
-    a.download = 'study_download'
-    a.click()
-  })
-}
 $(function () {
   changeClass("menu")
   changeClass("color")

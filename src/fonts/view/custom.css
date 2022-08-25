@@ -308,7 +308,8 @@ body {
   height: 50px;
 }
 .api_bottom .close,
-#iconview .close{
+#iconview .close,
+#iconview .downBtn{
   padding: 5px 15px;
   background: #1490d8;
   color: #fff;
@@ -319,7 +320,24 @@ body {
   right: 30px;
   bottom: 20px;
 }
+#iconview .downBtn{
+  right: 100px;
+}
 
 .top input:focus-visible{
   outline: none;
+}
+.down_size:focus-visible{
+  outline: none;
+}
+.down_size{
+  position: absolute;
+  top: 60px;
+  right: 20px;
+  height: 30px;
+  line-height: 30px;
+  font-size: 16px;
+  padding-left: 5px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
 }

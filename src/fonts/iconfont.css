@@ -8,11 +8,11 @@
       }
     @font-face {
     font-family: my-icons;
-    src: url("my-icons.eot");src: url("my-icons.eot?5c9f1282#iefix") format("embedded-opentype"),
-             url("my-icons.woff2?5c9f1282") format("woff2"),
-             url("my-icons.woff?5c9f1282") format("woff"),
-             url("my-icons.ttf?5c9f1282") format("truetype"),
-             url("my-icons.svg?5c9f1282#my-icons") format("svg");
+    src: url("my-icons.eot");src: url("my-icons.eot?ab7caa86#iefix") format("embedded-opentype"),
+             url("my-icons.woff2?ab7caa86") format("woff2"),
+             url("my-icons.woff?ab7caa86") format("woff"),
+             url("my-icons.ttf?ab7caa86") format("truetype"),
+             url("my-icons.svg?ab7caa86#my-icons") format("svg");
     font-weight: normal;
     font-style: normal;
 }
@@ -53,15 +53,19 @@
     content: "\ea07";
 }
 
-.icon-redhat::before {
+.icon-netware-colours::before {
     content: "\ea08";
 }
 
-.icon-speed::before {
+.icon-redhat::before {
     content: "\ea09";
 }
 
-.icon-wraning-colours::before {
+.icon-speed::before {
     content: "\ea0a";
+}
+
+.icon-wraning-colours::before {
+    content: "\ea0b";
 }
 
