@@ -145,10 +145,9 @@ function filterIcons() {
 
   if (currentMenuType === 'all_menu') {
     res = res
-  } else if (currentMenuType === 'pub') {
-    res = res.filter(icon => icon.type === "0")
-  } else if (currentMenuType === 'fun') {
-    res = res.filter(icon => icon.type === "1")
+  } else {
+    let typeIndex = currentMenuType.substring(4) - 0
+    res = res.filter(icon => icon.type === typeIndex)
   }
 
   if (searchText) {

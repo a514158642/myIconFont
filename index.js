@@ -12,6 +12,7 @@ const thirdFontClass = "iconfont"  //需要兼容的第三方iconfont样式
 const fileName = "iconfont"  //资源文件名
 const coloursFlagOfName = "-colours" //多色图标的名称标识
 const colours = [] //多色图标集合
+let typeList = []
 
 // icon json数据
 const iconsData = getIconsJson()
@@ -33,27 +34,25 @@ run()
 
 function getIconsJson() {
   let resJson = []
-  if (true) {//读取excel中的配置
-    let list = xlsx.parse("icons.xlsx")
-    if (list && list[0] && list[0].data && list[0].data.length > 1) {
-      list[0].data.shift()
-      list[0].data.map(icon => {
-        if (icon[0] && icon[1] && icon[2]) {
-          resJson.push({
-            name: icon[0],
-            type: getIconType(icon),
-            zh_cn: icon[2]
-          })
-        } else {
-          throw new Error("图标excel配置不正确，请校准！")
-        }
+  let list = xlsx.parse("icons.xlsx")
+  if (list && list[0] && list[0].data && list[0].data.length > 1) {
+    list[0].data.shift()
+    typeList = [...new Set(list[0].data.map(icon => icon[1]))]
+    typeList.sort()
+    list[0].data.map(icon => {
+      if (icon[0] && icon[1] && icon[2]) {
+        resJson.push({
+          name: icon[0],
+          type: typeList.findIndex(type => type === icon[1]),
+          zh_cn: icon[2]
+        })
+      } else {
+        throw new Error("图标excel配置不正确，请校准！")
+      }
 
-      })
-    } else {
-      throw new Error("图标excel配置不正确，请校准！")
-    }
-  } else { //直接读取json文件
-    resJson = JSON.parse(fs.readFileSync(path.resolve(__dirname, "./resource/icons.json"), "utf-8"))
+    })
+  } else {
+    throw new Error("图标excel配置不正确，请校准！")
   }
   resJson.sort(function (a, b) {
     if (a.name >= b.name) {
@@ -63,21 +62,6 @@ function getIconsJson() {
     }
   })
   return resJson
-}
-/**
- * 转换icon类型
- * @param {} icon 
- * @returns 
- */
-function getIconType(icon) {
-  switch (icon[1]) {
-    case "公共":
-      return "0"
-    case "功能":
-      return "1"
-    default:
-      throw new Error("图标" + icon[0] + "类型不合法！")
-  }
 }
 /**
  * 检查json数据
@@ -116,9 +100,6 @@ function createJs() {
       let temp = content.toString()
       //若出现重复的前缀，进行处理
       temp = temp.replace(/icon-icon-/g, `icon-`)
-      //备份一份svgList
-      // fs.writeFileSync(path.join(dir, `fonts/svgList.js`), temp)
-
       temp = JSON.parse(temp.substring(temp.indexOf("[")))
       temp.map(icon => {
         let num = 200  //统一各svg宽高为200
@@ -179,7 +160,8 @@ function createJs() {
           fs.copyFileSync(path.resolve(__dirname, "./resource/custom.css"), path.resolve(__dirname, "./src/fonts/view/custom.css"))
           fs.copyFileSync(path.resolve(__dirname, "./resource/svgAsPng.js"), path.resolve(__dirname, "./src/fonts/view/svgAsPng.js"))
           //注入全局变量
-          fs.writeFileSync(path.join(dir, 'fonts/view/icons.js'), "let thirdClass='" + thirdFontClass + "';let iconsData=" + JSON.stringify(iconsData))
+          let cusJs = ` let thirdClass='${thirdFontClass}';\n let iconsData=${JSON.stringify(iconsData)};`
+          fs.writeFileSync(path.join(dir, 'fonts/view/icons.js'), cusJs)
           createHtml()
         }
       })
@@ -248,6 +230,12 @@ function createHtml() {
 
     $("body").empty().html(fs.readFileSync(path.join(dir, `../resource/template.html`)).toString())
     $("#num").text(iconsData.length)
+
+    let menuStr = `<div class="all_menu on">全部</div>`
+    typeList.map((type, index) => {
+      menuStr = menuStr + `<div class="type${index}">${type}</div>`
+    })
+    $(".left .menu").empty().append(menuStr)
 
     iconsData.map(icon => {
       let str = ``

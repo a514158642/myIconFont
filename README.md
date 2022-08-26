@@ -6,18 +6,17 @@
 
   2. 执行命令 npm install
 
-  3. 将svg图片放在svg目录下，多色图标命名必须已“-colours”结尾，单色图标随意
+  3. 将svg图片放在svg目录下，所有图标以“icon-”开头：多色图标命名必须已“-colours”结尾，单色图标结尾不做要求
 
-  4. 执行 node index
+  4. 配置icons.xlsx, "名称、类型、中文名称"，
+     其中类型为下拉选项，如需要编辑下拉选项（增加、删减），
+     通过excel: 选中类型列，点击 数据----数据验证----数据验证----设置----来源----输入选项（多个以逗号分隔）
 
-  5. 完毕后，fonts/下以生成iconfont资源，可通过 http://localhost:3000 进行查看图标
+  5. 执行 node index
 
-  6. 在项目中使用，需先引入iconfont.css、iconfont.js，如与第三方iconfont混用，还需引入resetFontFamily.css
+  6. 完毕后，fonts/下以生成iconfont资源，可通过 http://localhost:3000 进行查看图标
 
-  7. icons.json
-        name 图标名称
-        type 图标类型  0-公用图标  1-功能图标  后续再添加分类维度可以继续新增 2、3、4...
-        zh_cn 图标中文信息
+  7. 在项目中使用，需先引入iconfont.css、iconfont.js，如与第三方iconfont混用，还需引入resetFontFamily.css.
 
   注意：
 
