@@ -3,7 +3,9 @@ let currentColorType = "all_color"
 let currentMenuType = "all_menu"
 let searchText = ""
 let searchtimeout = null
-
+/**
+ * 按名称模糊搜索icon
+ */
 function search() {
   clearTimeout(searchtimeout)
   searchtimeout = setTimeout(function () {
@@ -11,25 +13,41 @@ function search() {
     filterIcons()
   }, 300)
 }
+/**
+ * 点击下载
+ * @param {*} name  icon名称
+ */
 function down(name) {
   view(name, true)
 }
+/**
+ * 拷贝icon名称
+ * @param {*} name icon名称
+ */
 function copyName(name) {
   $("#input-" + name)[0].focus();
   $("#input-" + name)[0].select()
   document.execCommand('copy', false, null);
 }
-
+/**
+ * 显示api弹框
+ */
 function showAPI() {
   $(".api_content").show()
   $(".mask").show()
 }
-
+/**
+ * 关闭api弹框
+ */
 function closeAPI() {
   $(".api_content").hide()
   $(".mask").hide()
 }
-
+/**
+ * 渲染icon弹框
+ * @param {*} name icon名称 
+ * @param {*} flag 是否为下载操作
+ */
 function view(name, flag) {
   let icon = iconsData.find(item => item.name === name)
   if ($("#iconview")) {
@@ -100,6 +118,10 @@ function view(name, flag) {
     </div>
   `)
 }
+/**
+ * 执行下载
+ * @param {*} name icon名称
+ */
 function doDownLoad(name) {
   let node = $("#svg-" + name)[0]
   let size = $("#down_size").val() - 0
@@ -107,10 +129,18 @@ function doDownLoad(name) {
 
   saveSvgAsPng(node, `${name}.${size}x${size}.png`, { scale: size / 1000 });
 }
+/**
+ * 关闭icon弹框
+ */
 function closeIconview() {
   $("#iconview").hide()
   $(".mask").hide()
 }
+/**
+ * 修改icon的颜色
+ * @param {*} name icon名称
+ * @param {*} flag 是否为下载操作
+ */
 function changeViewColor(name, flag) {
   var color = $("#view_color").val()
   $("#res_color").text(color)
@@ -121,7 +151,10 @@ function changeViewColor(name, flag) {
     $("#iconview ." + name).css("color", color)
   }
 }
-
+/**
+ * 切换颜色卡、类型卡的选中行状态
+ * @param {*} type 
+ */
 function changeClass(type) {
   $("div." + type + ">div").click(function (e) {
     let $e = $(e.target)
@@ -132,7 +165,9 @@ function changeClass(type) {
     }
   })
 }
-
+/**
+ * 过滤icon列表
+ */
 function filterIcons() {
   let res = []
   if (currentColorType === 'all_color') {
@@ -156,7 +191,10 @@ function filterIcons() {
   renderHtml(res)
   renderAPI(res)
 }
-
+/**
+ * 渲染icon列表
+ * @param {*} datas 
+ */
 function renderHtml(datas) {
   $("#num").text(datas.length)
   $("#icon_content").empty()
@@ -186,7 +224,10 @@ function renderHtml(datas) {
   }
 
 }
-
+/**
+ * 渲染API弹框
+ * @param {*} res 
+ */
 function renderAPI(res) {
   $("#api_wrap").empty()
   if (res.length) {
