@@ -115,7 +115,7 @@ function createJs() {
         }
 
         if (!width || !height) {
-          icon.svg = icon.svg.replace(/<svg/ig, `<svg width="${num}" height="${num}"`)
+          icon.svg = icon.svg.replace(/<svg/ig, `<svg width="${num}" height="${num}" class="icon"`)
         }
         if (!icon.name.includes("-colours") && fill) {
           fill.map(fItem => {
