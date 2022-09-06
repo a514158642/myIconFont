@@ -1,23 +1,15 @@
-
-      .icon {
-        width: 1em;
-        height: 1em;
-        vertical- align: -0.15em;
-        fill: currentColor;
-        overflow: hidden;
-      }
-    @font-face {
+@font-face {
     font-family: my-icons;
-    src: url("my-icons.eot");src: url("my-icons.eot?ab7caa86#iefix") format("embedded-opentype"),
-             url("my-icons.woff2?ab7caa86") format("woff2"),
-             url("my-icons.woff?ab7caa86") format("woff"),
-             url("my-icons.ttf?ab7caa86") format("truetype"),
-             url("my-icons.svg?ab7caa86#my-icons") format("svg");
+    src: url("my-icons.eot");src: url("my-icons.eot?368dff6a#iefix") format("embedded-opentype"),
+             url("my-icons.woff2?368dff6a") format("woff2"),
+             url("my-icons.woff?368dff6a") format("woff"),
+             url("my-icons.ttf?368dff6a") format("truetype"),
+             url("my-icons.svg?368dff6a#my-icons") format("svg");
     font-weight: normal;
     font-style: normal;
 }
 
-.iconfont {
+[class^="icon"], [class*=" icon"] {
     font-family: 'my-icons' !important;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
@@ -25,47 +17,43 @@
 }
 
 
-.icon-android-colours::before {
+.icon-icon-android-colours::before {
     content: "\ea01";
 }
 
-.icon-basicnetwork::before {
+.icon-icon-basicnetwork::before {
     content: "\ea02";
 }
 
-.icon-containerimagelibrary::before {
+.icon-icon-containerimagelibrary::before {
     content: "\ea03";
 }
 
-.icon-deepin::before {
+.icon-icon-fedora::before {
     content: "\ea04";
 }
 
-.icon-fedora::before {
+.icon-icon-home-Workorder::before {
     content: "\ea05";
 }
 
-.icon-home-Workorder::before {
+.icon-icon-macos::before {
     content: "\ea06";
 }
 
-.icon-macos::before {
+.icon-icon-netware-colours::before {
     content: "\ea07";
 }
 
-.icon-netware-colours::before {
+.icon-icon-redhat::before {
     content: "\ea08";
 }
 
-.icon-redhat::before {
+.icon-icon-speed::before {
     content: "\ea09";
 }
 
-.icon-speed::before {
+.icon-icon-wraning-colours::before {
     content: "\ea0a";
-}
-
-.icon-wraning-colours::before {
-    content: "\ea0b";
 }
 

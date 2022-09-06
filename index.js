@@ -221,11 +221,31 @@ function createHtml() {
       }
     })
     $("style").remove()
-    let oldLen = $("section").length
-    let jsonLen = iconsData.length
+    let svgLen = $("section").length
+    let excelLen = iconsData.length
 
-    if (oldLen !== jsonLen) {
-      throw new Error(`列表中的svg数量（${oldLen}）与配置文件中的svg数量（${jsonLen}）不一致。`)
+    if (svgLen !== excelLen) {
+      let svgList = []
+      $("section input").map((index, item) => {
+        let value = $(item).val()
+        if (value) {
+          svgList.push(value.replace(/icon-icon-/g, `icon-`))
+        }
+      })
+      let notInExcel = svgList.filter(svg => iconsData.every(icon => icon.name !== svg))
+      let notInSvg = iconsData.filter(icon => svgList.every(svg => svg !== icon.name))
+      console.error(`\n src/svg/目录下的svg数量（${svgLen}）与配置文件中的svg数量（${excelLen}）不一致。\n`)
+      if (notInExcel.length) {
+        console.error(`src/svg/目录下的下列图标，在excel中不存在：`)
+        console.error(notInExcel.join(" "))
+        console.error("\n")
+      }
+      if (notInSvg.length) {
+        console.error(`excel中的下列图标，在src/svg目录下不存在：`)
+        console.error(notInSvg.map(item => item.name).join(" "))
+        console.error("\n")
+      }
+      return false
     }
 
     $("body").empty().html(fs.readFileSync(path.join(dir, `../resource/template.html`)).toString())
