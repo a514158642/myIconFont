@@ -265,7 +265,7 @@ function createHtml() {
         str = `<i class="${thirdFontClass} ${icon.name}" id="icon_${icon.name}"></i>`
       }
 
-      $("#icon_content").append(`<section> 
+      $("#icon_content").append(`<section onmouseenter="showHandle('${icon.name}')" onmouseleave="hideHandle('${icon.name}')"> 
         <div class="name">${icon.zh_cn}</div> 
         <input type="text" id="input-${icon.name}" value="${icon.name}" readonly></input>
         <div class="icon_main">${str}</div>

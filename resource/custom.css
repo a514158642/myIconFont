@@ -148,8 +148,9 @@ body {
   height: 140px;
   justify-content: space-between;
   border: 1px solid #ebebeb;
-  padding: 10px;
   border-radius: 5px;
+  overflow: hidden;
+  padding-top: 10px;
 }
 
 .bottom section:hover{
@@ -161,21 +162,22 @@ body {
 }
 
 .bottom section .name{
-  width: 100%;
+  width: 98%;
   text-overflow: ellipsis;
   white-space: nowrap;
   overflow: hidden;
-}
-.bottom section .name{
-  width: 100%;
+  margin-left: 1%;
 }
 .bottom section .handle{
   display: flex;
   justify-content: space-around;
-  margin-top: 10px;
+  position: relative;
+  top: 32px;
+  background: #000;
+  padding: 5px 0;
 }
 .bottom section .handle span{
-  color: #2c89fc;
+  color: #fff;
   cursor: pointer;
 }
 
@@ -272,13 +274,10 @@ body {
   flex-direction: column;
   padding: 20px;
 }
-
-.api_content .api_top>div,
-#api_wrap>div{
-  padding: 0 20px;
-  height: 30px;
-  line-height: 30px;
+.api_content .api_top{
+  height:100px;
 }
+
 .api_content .api_top>div:nth-child(odd),
 #api_wrap>div:nth-child(odd){
   background-color: #ebebeb;
@@ -286,26 +285,46 @@ body {
 .api_content .api_top>div>span:first-child,
 #api_wrap>div>span:first-child{
   display: inline-block;
-  width: 100px;
+  width: 150px;
   text-align: left;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.api_content .row{
+  display: flex;
+  align-items: center;
+  padding: 5px 20px;
+  height: 30px;
+  line-height: 30px;
 }
 .api_content .api_top>div>span:last-child,
 #api_wrap>div>span:last-child{
   background: #000;
   color: #fff;
-  padding: 4px 10px;
+  padding: 0px 10px;
   border-radius: 3px;
 }
 .api_content .api_main{
-  flex:1;
+  flex: 1;
   margin-top: 40px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+.api_content .api_main .title{
+  height:40px
+}
+.api_content .api_main #api_wrap{
+  flex: 1;
+  overflow-y: scroll;
 }
 #api_wrap .nodata{
   width: auto;
   background-color: #fff !important;
 }
 .api_bottom{
-  height: 50px;
+  height: 60px;
 }
 .api_bottom .close,
 #iconview .close,

@@ -3,6 +3,7 @@ let currentColorType = "all_color"
 let currentMenuType = "all_menu"
 let searchText = ""
 let searchtimeout = null
+let showHandleTimeout = null
 /**
  * 按名称模糊搜索icon
  */
@@ -33,7 +34,7 @@ function copyName(name) {
  * 显示api弹框
  */
 function showAPI() {
-  $(".api_content").show()
+  $(".api_content").css("display", "flex")
   $(".mask").show()
 }
 /**
@@ -208,7 +209,7 @@ function renderHtml(datas) {
         str = `<i class="${thirdClass} ${icon.name}"></i>`
       }
 
-      $("#icon_content").append(`<section> 
+      $("#icon_content").append(`<section onmouseenter="showHandle('${icon.name}')" onmouseleave="hideHandle('${icon.name}')"> 
         <div class="name">${icon.zh_cn}</div> 
         <input type="text" id="input-${icon.name}" value="${icon.name}" readonly></input>
         <div class="icon_main">${str}</div>
@@ -223,6 +224,18 @@ function renderHtml(datas) {
     $("#icon_content").append(`<div class="nodata">暂无数据</div>`)
   }
 
+}
+function showHandle() {
+  let section = $(event.target)
+  let handle = section.find(".handle")
+  // handle.animate({ top: 0 }, 300);
+  handle.css({ top: "0px" });
+}
+function hideHandle() {
+  let section = $(event.target)
+  let handle = section.find(".handle")
+  // $(".handle").animate({ top: "32px" }, 300);
+  handle.css({ top: "32px" });
 }
 /**
  * 渲染API弹框
@@ -239,7 +252,7 @@ function renderAPI(res) {
         str = `&lt;span class="${thirdClass} ${item.name}" /&gt`
       }
 
-      $("#api_wrap").append(`<div><span>${item.zh_cn}</span><span>${str}</span></div>`)
+      $("#api_wrap").append(`<div class="row"><span>${item.zh_cn}</span><span>${str}</span></div>`)
     })
   } else {
     $("#api_wrap").append(`<div class="nodata">暂无数据</div>`)
